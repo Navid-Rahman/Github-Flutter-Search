@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/repository_bloc.dart';
 import '../bloc/repository_event.dart';
 import '../bloc/repository_state.dart';
+import '../widgets/error_widget.dart';
+import '../widgets/repository_shimmer_widget.dart';
 import '../widgets/sort_button_widgets.dart';
 
 class RepositoriesPage extends StatefulWidget {
@@ -47,7 +49,7 @@ class RepositoriesPageState extends State<RepositoriesPage> {
           if (state is RepositoryInitial) {
             return Center(child: Text('Welcome to Flutter GitHub Search'));
           } else if (state is RepositoryLoading) {
-            return Center(child: CircularProgressIndicator());
+            return RepositoryShimmerWidget();
           } else if (state is RepositoryLoaded) {
             return RefreshIndicator(
               onRefresh: () async {
@@ -74,25 +76,13 @@ class RepositoriesPageState extends State<RepositoriesPage> {
               ),
             );
           } else if (state is RepositoryError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Error: ${state.message}',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<RepositoryBloc>(
-                        context,
-                      ).add(LoadRepositories());
-                    },
-                    child: Text('Retry'),
-                  ),
-                ],
-              ),
+            return ErrorDisplayWidget(
+              message: state.message,
+              onRetry: () {
+                BlocProvider.of<RepositoryBloc>(
+                  context,
+                ).add(LoadRepositories());
+              },
             );
           }
           return Container();
