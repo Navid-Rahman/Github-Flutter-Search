@@ -6,6 +6,7 @@ import '../bloc/repository_state.dart';
 import '../widgets/error_widget.dart';
 import '../widgets/repository_shimmer_widget.dart';
 import '../widgets/sort_button_widgets.dart';
+import '../widgets/repository_list_widget.dart';
 
 class RepositoriesPage extends StatefulWidget {
   const RepositoriesPage({super.key});
@@ -53,7 +54,9 @@ class RepositoriesPageState extends State<RepositoriesPage> {
           } else if (state is RepositoryLoaded) {
             return RefreshIndicator(
               onRefresh: () async {
-                BlocProvider.of<RepositoryBloc>(context).add(RefreshRepositories());
+                BlocProvider.of<RepositoryBloc>(
+                  context,
+                ).add(RefreshRepositories());
               },
               child: RepositoryListWidget(repositories: state.repositories),
             );
