@@ -128,7 +128,6 @@ The app uses GitHub's REST API v3:
 
 - **Endpoint:** `https://api.github.com/search/repositories`
 - **Query:** `q=Flutter&sort=stars&order=desc&per_page=50`
-- **Rate Limit:** 60 requests per hour (unauthenticated)
 
 ---
 
@@ -196,41 +195,3 @@ The project maintains high code quality through:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Git Commit
-
-```bash
-git add .
-git commit -m "Complete project integration with theme support and comprehensive README documentation"
-```
-
----
-
-## Final Git Workflow Summary
-
-Here's the complete Git commit history you should have:
-
-```bash
-git log --oneline
-```
-
-**Expected output:**
-
-```
-Complete project integration with theme support and comprehensive README documentation
-Implement app flavors, environment configuration, and theme switching functionality
-Add comprehensive testing setup and enhanced error handling widgets
-Add enhanced UI components: sort functionality and loading shimmer effects
-Implement repository pattern with proper error handling and offline support
-Setup dependency injection with GetIt service locator
-Implement complete UI with repository list, detail pages, and attractive design
-Implement BLoC pattern for state management with events, states, and business logic
-Implement data layer: models and data sources for remote and local storage
-Implement domain layer: entities, repository contracts, and use cases
-Add core infrastructure: constants, error handling, and network info
-Setup clean architecture folder structure
-Add project dependencies for state management, networking, and storage
-Initial commit: Flutter project setup
-```
