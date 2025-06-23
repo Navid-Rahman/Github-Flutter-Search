@@ -1,4 +1,3 @@
-// config/app_theme.dart
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -6,7 +5,6 @@ class AppTheme {
   static const Color _githubBlack = Color(0xFF0D1117);
   static const Color _githubDarkGray = Color(0xFF161B22);
   static const Color _githubGray = Color(0xFF21262D);
-  static const Color _githubLightGray = Color(0xFF30363D);
   static const Color _githubBorder = Color(0xFF373E47);
   static const Color _githubText = Color(0xFFE6EDF3);
   static const Color _githubTextSecondary = Color(0xFF8D96A0);
@@ -23,12 +21,10 @@ class AppTheme {
         primary: _githubBlue,
         secondary: _githubGreen,
         surface: Colors.white,
-        background: Color(0xFFF6F8FA),
         error: _githubRed,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: Color(0xFF24292F),
-        onBackground: Color(0xFF24292F),
       ),
 
       // AppBar Theme
@@ -103,13 +99,11 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: _githubBlue,
         secondary: _githubGreen,
-        surface: _githubGray,
-        background: _githubBlack,
+        surface: _githubBlack,
         error: _githubRed,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: _githubText,
-        onBackground: _githubText,
       ),
 
       // AppBar Theme

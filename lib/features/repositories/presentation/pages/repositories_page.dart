@@ -27,7 +27,7 @@ class RepositoriesPageState extends State<RepositoriesPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: const Text('Flutter Repositories'),
         actions: [
