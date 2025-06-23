@@ -22,7 +22,7 @@ Future<void> init() async {
   );
 
   // Register theme bloc
-  sl.registerFactory<ThemeBloc>(() => ThemeBloc());
+  sl.registerFactory<ThemeBloc>(() => ThemeBloc(sharedPreferences: sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetRepositories(sl()));
