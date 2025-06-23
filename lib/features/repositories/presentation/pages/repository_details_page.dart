@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../config/app_theme.dart';
 import '../../domain/entities/repository.dart';
 
 class RepositoryDetailPage extends StatelessWidget {
@@ -11,59 +12,97 @@ class RepositoryDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text(repository.name),
+        title: Text(repository.name, style: theme.appBarTheme.titleTextStyle),
         actions: [
           IconButton(
-            icon: Icon(Icons.open_in_browser),
+            icon: const Icon(Icons.open_in_browser),
             onPressed: () => _launchURL(repository.htmlUrl),
+            tooltip: 'Open in browser',
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildOwnerSection(),
-            SizedBox(height: 24),
-            _buildRepositoryInfo(),
-            SizedBox(height: 24),
-            _buildStatsSection(),
-            SizedBox(height: 24),
-            _buildTopicsSection(),
+            _buildHeader(context),
+            const SizedBox(height: 16),
+            _buildDescription(context),
+            const SizedBox(height: 16),
+            _buildStats(context),
+            const SizedBox(height: 16),
+            _buildLanguageAndTopics(context),
+            const SizedBox(height: 16),
+            _buildDates(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOwnerSection() {
+  Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             CircleAvatar(
-              radius: 30,
+              radius: 24,
               backgroundImage: CachedNetworkImageProvider(
                 repository.owner.avatarUrl,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     repository.owner.login,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
-                    'Repository Owner',
-                    style: TextStyle(color: Colors.grey[600]),
+                    repository.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Text(
+                      'Public',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.textTheme.bodySmall?.color,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -74,35 +113,60 @@ class RepositoryDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRepositoryInfo() {
+  Widget _buildDescription(BuildContext context) {
+    if (repository.description.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Description',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'About',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              repository.description.isEmpty
-                  ? 'No description available'
-                  : repository.description,
-              style: TextStyle(fontSize: 16),
+            const SizedBox(height: 8),
+            Text(repository.description, style: theme.textTheme.bodyMedium),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStats(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildStatItem(
+              context,
+              Icons.star,
+              AppTheme.starColor,
+              _formatCount(repository.stargazersCount),
+              'Stars',
             ),
-            SizedBox(height: 16),
-            Text(
-              'Language',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Container(
+              width: 1,
+              height: 40,
+              color: theme.colorScheme.outline.withOpacity(0.3),
             ),
-            SizedBox(height: 8),
-            Text(
-              repository.language.isEmpty
-                  ? 'Not specified'
-                  : repository.language,
-              style: TextStyle(fontSize: 16),
+            _buildStatItem(
+              context,
+              Icons.call_split,
+              theme.iconTheme.color ?? Colors.grey,
+              _formatCount(repository.forksCount),
+              'Forks',
             ),
           ],
         ),
@@ -110,106 +174,155 @@ class RepositoryDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsSection() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Statistics',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildStatItem(
-                  Icons.star,
-                  '${repository.stargazersCount}',
-                  'Stars',
-                ),
-                _buildStatItem(
-                  Icons.call_split,
-                  '${repository.forksCount}',
-                  'Forks',
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            _buildDateInfo('Created:', repository.createdAt),
-            SizedBox(height: 8),
-            _buildDateInfo('Last Updated:', repository.updatedAt),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildStatItem(
+    BuildContext context,
+    IconData icon,
+    Color iconColor,
+    String count,
+    String label,
+  ) {
+    final theme = Theme.of(context);
 
-  Widget _buildStatItem(IconData icon, String count, String label) {
     return Column(
       children: [
-        Icon(icon, size: 32, color: Colors.blue),
-        SizedBox(height: 8),
+        Icon(icon, size: 24, color: iconColor),
+        const SizedBox(height: 4),
         Text(
           count,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
-        Text(label, style: TextStyle(color: Colors.grey[600])),
+        Text(label, style: theme.textTheme.bodySmall),
       ],
     );
   }
 
-  Widget _buildDateInfo(String label, DateTime date) {
+  Widget _buildLanguageAndTopics(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasLanguage = repository.language.isNotEmpty;
+    final hasTopics = repository.topics.isNotEmpty;
+
+    if (!hasLanguage && !hasTopics) return const SizedBox.shrink();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasLanguage) ...[
+              Text(
+                'Language',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: AppTheme.languageColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(repository.language, style: theme.textTheme.bodyMedium),
+                ],
+              ),
+            ],
+
+            if (hasLanguage && hasTopics) const SizedBox(height: 16),
+
+            if (hasTopics) ...[
+              Text(
+                'Topics',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: repository.topics.map((topic) {
+                  return Chip(
+                    label: Text(topic),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDates(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Repository Info',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildDateRow(context, 'Created', repository.createdAt),
+            const SizedBox(height: 8),
+            _buildDateRow(context, 'Last updated', repository.updatedAt),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateRow(BuildContext context, String label, DateTime date) {
+    final theme = Theme.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
+        Text(label, style: theme.textTheme.bodyMedium),
         Text(
-          DateFormat('MM-dd-yyyy HH:mm').format(date),
-          style: TextStyle(color: Colors.grey[600]),
+          DateFormat('MMM d, yyyy').format(date),
+          style: theme.textTheme.bodySmall,
         ),
       ],
     );
   }
 
-  Widget _buildTopicsSection() {
-    if (repository.topics.isEmpty) return Container();
-
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Topics',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: repository.topics
-                  .map(
-                    (topic) => Chip(
-                      label: Text(topic),
-                      backgroundColor: Colors.blue.withOpacity(0.1),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    );
+  String _formatCount(int count) {
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M';
+    } else if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(1)}k';
+    }
+    return count.toString();
   }
 
   void _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }

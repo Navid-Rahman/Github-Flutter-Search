@@ -12,9 +12,17 @@ class SortButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return PopupMenuButton<String>(
-      icon: Icon(Icons.sort),
+      icon: Icon(Icons.sort, color: theme.iconTheme.color),
       onSelected: onSortChanged,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outline.withOpacity(0.3)),
+      ),
+      color: theme.colorScheme.surface,
+      elevation: 8,
       itemBuilder: (BuildContext context) => [
         PopupMenuItem<String>(
           value: 'stars',
@@ -22,14 +30,27 @@ class SortButtonWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.star,
-                color: currentSort == 'stars' ? Colors.blue : Colors.grey,
+                color: currentSort == 'stars'
+                    ? theme.colorScheme.primary
+                    : theme.iconTheme.color,
+                size: 20,
               ),
-              SizedBox(width: 8),
-              Text('Sort by Stars'),
-              if (currentSort == 'stars') ...[
-                Spacer(),
-                Icon(Icons.check, color: Colors.blue),
-              ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Best match',
+                  style: TextStyle(
+                    color: currentSort == 'stars'
+                        ? theme.colorScheme.primary
+                        : theme.textTheme.bodyLarge?.color,
+                    fontWeight: currentSort == 'stars'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+              if (currentSort == 'stars')
+                Icon(Icons.check, color: theme.colorScheme.primary, size: 20),
             ],
           ),
         ),
@@ -39,14 +60,27 @@ class SortButtonWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.access_time,
-                color: currentSort == 'updated' ? Colors.blue : Colors.grey,
+                color: currentSort == 'updated'
+                    ? theme.colorScheme.primary
+                    : theme.iconTheme.color,
+                size: 20,
               ),
-              SizedBox(width: 8),
-              Text('Sort by Updated'),
-              if (currentSort == 'updated') ...[
-                Spacer(),
-                Icon(Icons.check, color: Colors.blue),
-              ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Recently updated',
+                  style: TextStyle(
+                    color: currentSort == 'updated'
+                        ? theme.colorScheme.primary
+                        : theme.textTheme.bodyLarge?.color,
+                    fontWeight: currentSort == 'updated'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+              if (currentSort == 'updated')
+                Icon(Icons.check, color: theme.colorScheme.primary, size: 20),
             ],
           ),
         ),
