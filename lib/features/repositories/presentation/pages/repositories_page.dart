@@ -53,27 +53,9 @@ class RepositoriesPageState extends State<RepositoriesPage> {
           } else if (state is RepositoryLoaded) {
             return RefreshIndicator(
               onRefresh: () async {
-                BlocProvider.of<RepositoryBloc>(
-                  context,
-                ).add(RefreshRepositories());
+                BlocProvider.of<RepositoryBloc>(context).add(RefreshRepositories());
               },
-              child: ListView.builder(
-                itemCount: state.repositories.length,
-                itemBuilder: (context, index) {
-                  final repository = state.repositories[index];
-                  return ListTile(
-                    title: Text(repository.name),
-                    subtitle: Text(repository.description),
-                    trailing: Text('★ ${repository.id}'),
-                    onTap: () {
-                      // Handle repository tap
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Tapped on ${repository.name}')),
-                      );
-                    },
-                  );
-                },
-              ),
+              child: RepositoryListWidget(repositories: state.repositories),
             );
           } else if (state is RepositoryError) {
             return ErrorDisplayWidget(
