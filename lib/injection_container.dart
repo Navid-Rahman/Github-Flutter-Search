@@ -10,6 +10,7 @@ import 'features/repositories/data/repositories/repository_repository_impl.dart'
 import 'features/repositories/domain/repositories/repo_repository.dart';
 import 'features/repositories/domain/usecases/get_repositories.dart';
 import 'features/repositories/presentation/bloc/repository_bloc.dart';
+import 'features/theme/presentation/bloc/theme_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -19,6 +20,9 @@ Future<void> init() async {
   sl.registerFactory(
     () => RepositoryBloc(getRepositories: sl(), networkInfo: sl()),
   );
+
+  // Register theme bloc
+  sl.registerFactory<ThemeBloc>(() => ThemeBloc());
 
   // Use cases
   sl.registerLazySingleton(() => GetRepositories(sl()));
