@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../theme/presentation/bloc/theme_bloc.dart';
 import '../bloc/repository_bloc.dart';
 import '../bloc/repository_event.dart';
 import '../bloc/repository_state.dart';
@@ -31,19 +32,21 @@ class RepositoriesPageState extends State<RepositoriesPage> {
       appBar: AppBar(
         title: const Text('Flutter Repositories'),
         actions: [
-          // Theme toggle button (assuming you have ThemeBloc)
-          IconButton(
-            icon: Icon(
-              theme.brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-              color: theme.iconTheme.color,
-            ),
-            onPressed: () {
-              // Toggle theme - you'll need to implement this with your ThemeBloc
-              // context.read<ThemeBloc>().add(ToggleTheme());
+          BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, themeState) {
+              return IconButton(
+                icon: Icon(
+                  themeState.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  color: theme.iconTheme.color,
+                ),
+                onPressed: () {
+                  context.read<ThemeBloc>().add(ThemeEvent.toggleTheme);
+                },
+                tooltip: themeState.isDarkMode
+                    ? 'Switch to light mode'
+                    : 'Switch to dark mode',
+              );
             },
-            tooltip: 'Toggle theme',
           ),
 
           // Sort button
