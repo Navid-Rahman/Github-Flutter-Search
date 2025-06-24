@@ -33,6 +33,8 @@ class RepositoryDetailPage extends StatelessWidget {
           children: [
             _buildHeader(context),
             const SizedBox(height: 16),
+            _buildRepositoryInfo(context),
+            const SizedBox(height: 16),
             _buildDescription(context),
             const SizedBox(height: 16),
             _buildStats(context),
@@ -106,6 +108,76 @@ class RepositoryDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRepositoryInfo(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Repository',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                // Repository avatar/icon
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.folder,
+                    size: 24,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        repository.name,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${repository.owner.login}/${repository.name}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: theme.textTheme.bodyMedium?.color,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -303,7 +375,7 @@ class RepositoryDetailPage extends StatelessWidget {
       children: [
         Text(label, style: theme.textTheme.bodyMedium),
         Text(
-          DateFormat('MMM d, yyyy').format(date),
+          DateFormat('MM-dd-yyyy HH:mm').format(date),
           style: theme.textTheme.bodySmall,
         ),
       ],
