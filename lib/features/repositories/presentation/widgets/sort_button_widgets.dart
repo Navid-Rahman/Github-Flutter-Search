@@ -23,6 +23,7 @@ class SortButtonWidget extends StatelessWidget {
       ),
       color: theme.colorScheme.surface,
       elevation: 8,
+      tooltip: 'Sort repositories',
       itemBuilder: (BuildContext context) => [
         PopupMenuItem<String>(
           value: 'stars',
@@ -38,7 +39,7 @@ class SortButtonWidget extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Best match',
+                  'Sort by Stars',
                   style: TextStyle(
                     color: currentSort == 'stars'
                         ? theme.colorScheme.primary
@@ -68,7 +69,7 @@ class SortButtonWidget extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Recently updated',
+                  'Sort by Last Updated',
                   style: TextStyle(
                     color: currentSort == 'updated'
                         ? theme.colorScheme.primary
@@ -80,6 +81,36 @@ class SortButtonWidget extends StatelessWidget {
                 ),
               ),
               if (currentSort == 'updated')
+                Icon(Icons.check, color: theme.colorScheme.primary, size: 20),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'best_match',
+          child: Row(
+            children: [
+              Icon(
+                Icons.search,
+                color: currentSort == 'best_match'
+                    ? theme.colorScheme.primary
+                    : theme.iconTheme.color,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Best Match',
+                  style: TextStyle(
+                    color: currentSort == 'best_match'
+                        ? theme.colorScheme.primary
+                        : theme.textTheme.bodyLarge?.color,
+                    fontWeight: currentSort == 'best_match'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+              if (currentSort == 'best_match')
                 Icon(Icons.check, color: theme.colorScheme.primary, size: 20),
             ],
           ),
